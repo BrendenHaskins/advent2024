@@ -3,7 +3,7 @@ using System;
 namespace Solutions;
 
 class DayOne {
-    static void Main() {
+    public static void Run() {
         var one = new List<int>();
         var two = new List<int>();
 
