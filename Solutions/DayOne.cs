@@ -17,6 +17,7 @@ class DayOne {
         }
         
         Console.WriteLine(DiffOfTwoInputArrs(one,two));
+        Console.WriteLine(SimilarityScores(one,two));
     }
     
     static int DiffOfTwoInputArrs(List<int> one, List<int> two) {
@@ -28,6 +29,29 @@ class DayOne {
             int val =  Math.Abs(one[i] - two[i]);
             sum += val;
         }
+        return sum;
+    }
+
+    static int SimilarityScores(List<int> one, List<int> two) {
+        Dictionary<int, int> freq = new Dictionary<int, int>();
+        int sum = 0;
+
+        for(int i = 0; i < two.Count; i++) {
+            int curr = two[i];
+            if(freq.ContainsKey(curr)) {
+                freq[curr] = freq[curr] + 1;
+            } else {
+                freq[curr] = 1;
+            }
+        }
+
+        for(int i = 0; i < one.Count; i++) {
+            int curr = one[i];
+            if(freq.ContainsKey(curr)) {
+                sum += curr * freq[curr];
+            }
+        }
+
         return sum;
     }
 }
