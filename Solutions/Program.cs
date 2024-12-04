@@ -6,7 +6,7 @@ namespace Solutions
     {
         static void Main()
         {
-            DayTwo.Run();
+            DayThree.Run();
         }
     }
 }
