@@ -49,6 +49,7 @@ class DayThree {
             string regx = "mul\\(\\d{1,3},\\d{1,3}\\)";
             string instRegx = "do(nt)?\\(\\)";
             Match instruction = Regex.Match(line, instRegx);
+            Console.WriteLine(instruction.Length);
             Match target = Regex.Match(line, regx);
 
             if((instruction.Length == 6 /**dont()*/ && instruction.Index < target.Index) || doing == false) {
