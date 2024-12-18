@@ -1,4 +1,3 @@
-using Sandbox;
 using System;
 using System.Text.RegularExpressions;
 
@@ -11,22 +10,33 @@ class DayThree
         bool IsStateInstruction { get; }
 
     }
+
     private class StateInstruction(Match instruct) : Instruction
     {
         bool Instruction.IsStateInstruction => true;
 
-        bool isDo { get; } = instruct.Length == 4;
+        public bool IsDo { get; } = instruct.Length == 4;
+
+        public override string ToString() {
+            if(IsDo) {return "DO";} else {return "DONT";}
+        }
     }
+    
     private class MultiplyInstruction(Match instruct) : Instruction
     {
         bool Instruction.IsStateInstruction => false;
 
-        int result { get; set; } = GetResult(instruct);
+        public int result { get; set; } = GetResult(instruct);
 
+
+        public override string ToString() {
+            return "Mul: " + result;
+        }
 
         private static int GetResult(Match instruct)
         {
-            string parsable = instruct.ToString().Substring(4, instruct.ToString().Length - 4);
+            string parsableWithParenthesis = instruct.ToString().Substring(4);
+            string parsable = parsableWithParenthesis.Substring(0,parsableWithParenthesis.Length-1);
             string[] parseArr = parsable.Split(",");
             return int.Parse(parseArr[0]) * int.Parse(parseArr[1]);
         }
@@ -35,13 +45,11 @@ class DayThree
     }
 
 
-public static void Main()
+public static void Run()
     {
 
-        using (StreamReader fileInput = new StreamReader("C:/Users/Brenden/Desktop/input3.txt"))
+        using (StreamReader fileInput = new StreamReader("input3.txt"))
         {
-            int count = 0;
-
             string line;
             string allLines = "";
             while ((line = fileInput.ReadLine()) != null)
@@ -49,9 +57,7 @@ public static void Main()
                 allLines += line;
             }
 
-            ReturnSumOfLineWithInstructions(allLines);
-
-            Console.WriteLine(count);
+            Console.WriteLine(ReturnSumOfLineWithInstructions(allLines));
         }
     }
 
@@ -99,16 +105,14 @@ public static void Main()
                 if (mult.Index < state.Index)
                 {
                     queue.Enqueue(new MultiplyInstruction(mult));
-                    queue.Enqueue(new StateInstruction(state));
 
-                    line = line.Substring(state.Index + state.Length);
+                    line = line.Substring(mult.Index + mult.Length);
                 }
                 else
                 {
                     queue.Enqueue(new StateInstruction(state));
-                    queue.Enqueue(new MultiplyInstruction(mult));
 
-                    line = line.Substring(mult.Index + mult.Length);
+                    line = line.Substring(state.Index + state.Length);
                 }
             }
             else if (mult.Success)
@@ -130,9 +134,18 @@ public static void Main()
             Instruction current = queue.Dequeue();
             if(current.IsStateInstruction)
             {
+                StateInstruction currentState = (StateInstruction) current;
+                isOperating = currentState.IsDo;
                 
+            } else {
+                MultiplyInstruction currentMultiplyer = (MultiplyInstruction) current;
+                if(isOperating) {
+                    sum += currentMultiplyer.result;
+                }
             }
         }
+
+        return sum;
             
     }
 
