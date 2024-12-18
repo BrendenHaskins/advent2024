@@ -6,11 +6,32 @@ namespace Solutions;
 
 class DayThree
 {
+    private interface Instruction
+    {
+        bool IsStateInstruction { get; }
+
+    }
     private class StateInstruction(Match instruct) : Instruction
     {
         bool Instruction.IsStateInstruction => true;
 
         bool isDo { get; } = instruct.Length == 4;
+    }
+    private class MultiplyInstruction(Match instruct) : Instruction
+    {
+        bool Instruction.IsStateInstruction => false;
+
+        int result { get; set; } = GetResult(instruct);
+
+
+        private static int GetResult(Match instruct)
+        {
+            string parsable = instruct.ToString().Substring(4, instruct.ToString().Length - 4);
+            string[] parseArr = parsable.Split(",");
+            return int.Parse(parseArr[0]) * int.Parse(parseArr[1]);
+        }
+
+
     }
 
 
